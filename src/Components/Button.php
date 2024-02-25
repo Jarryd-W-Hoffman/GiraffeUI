@@ -10,7 +10,10 @@ class Button extends Component
     public $link;
     public $type;
     public $disabled;
-    public $classes;
+    public $fullWidth;
+    public $variant;
+    public $size;
+    public $color;
 
     /**
      * Create a new component instance.
@@ -22,31 +25,16 @@ class Button extends Component
      * @param  bool  $disabled
      * @return void
      */
-    public function __construct($text, $link = null, $type = null, $disabled = false)
+    public function __construct($text, $link = null, $type = null, $disabled = false, $fullWidth = false, $variant = 'contained', $size = 'medium', $color = 'primary')
     {
         $this->text = $text;
         $this->link = $link;
         $this->type = $type ?? 'button';
         $this->disabled = $disabled;
-    }
-
-    public function classes()
-    {
-        $classes = [
-            'bg-blue-500',
-            'text-white',
-            'font-bold',
-            'py-2',
-            'px-4',
-            'rounded',
-        ];
-
-        if ($this->disabled) {
-            $classes[] = 'opacity-50';
-            $classes[] = 'cursor-not-allowed';
-        }
-
-        return $classes;
+        $this->fullWidth = $fullWidth;
+        $this->variant = $variant;
+        $this->size = $size;
+        $this->color = $color;
     }
 
     /**
@@ -56,8 +44,6 @@ class Button extends Component
      */
     public function render()
     {
-        return view('giraffeui::button', [
-            'classes' => $this->classes(),
-        ]);
+        return view('giraffeui::button');
     }
 }
