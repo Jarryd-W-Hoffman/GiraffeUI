@@ -15,20 +15,12 @@ class GiraffeUIServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Load your package routes, views, assets, etc.
-
+        // Load views from the 'resources/views' directory within the package.
         $this->loadViewsFrom(__DIR__.'/resources/views', 'giraffeui');
 
-        Blade::component('GiraffeUI::button', Button::class);
-
-        // $this->publishes([
-        //     __DIR__.'/path/to/assets' => public_path('jayaitch/giraffeui'),
-        // ], 'public');
-
-        // Register your button component view
-        // $this->loadViewComponentsAs('giraffeui', [
-        //     \JayAitch\GiraffeUI\Components\Button::class => 'giraffeui::button',
-        // ]);
+        // Register the blade component aliases. 
+        // Usage: <x-gui::{component} />
+        Blade::component('gui::button', Button::class);
     }
 
     /**

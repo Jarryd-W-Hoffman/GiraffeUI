@@ -1,4 +1,17 @@
 <!-- resources/views/button.blade.php -->
-<button>
-    {{ $slot }}
-</button>
+<{{ $link ? 'a' : 'button' }} 
+    @if($link) 
+        href="{{ $link }}" 
+    @endif
+    type="{{ $type }}" 
+    {{ 
+        $attributes->merge(
+            [
+                'class' => implode(' ', $classes), 
+                'disabled' => $disabled
+            ]
+        ) 
+    }}
+>
+    {{ $text }}
+</{{ $link ? 'a' : 'button' }}>
