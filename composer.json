@@ -1,0 +1,17 @@
+{
+    "name": "jayaitch/giraffeui",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "JayAitch\\GiraffeUI\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jarryd Hoffman",
+            "email": "jarryd.hoffman@windowslive.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
