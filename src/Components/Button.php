@@ -46,7 +46,7 @@ class Button extends Component
             $classes[] = 'cursor-not-allowed';
         }
 
-        return implode(' ', $classes);
+        return $classes;
     }
 
     /**
