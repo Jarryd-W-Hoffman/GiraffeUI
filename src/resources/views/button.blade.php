@@ -4,11 +4,11 @@
         href="{{ $link }}" 
     @endif
     type="{{ $type }}" 
+    {{ $disabled ? 'disabled' : '' }} 
     {{ 
         $attributes->merge(
             [
-                'class' => implode(' ', $classes), 
-                'disabled' => $disabled
+                'class' => $classes
             ]
         ) 
     }}
