@@ -24,8 +24,15 @@ class Button extends Component
      *
      * @return \Illuminate\Contracts\View\View|string
      */
+    // public function render()
+    // {
+    //     return view('giraffeui::button');
+    // }
+
     public function render()
     {
+        $path = view('giraffeui::button')->getPath();
+        dd($path);
         return view('giraffeui::button');
     }
 }

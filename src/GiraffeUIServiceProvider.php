@@ -22,9 +22,12 @@ class GiraffeUIServiceProvider extends ServiceProvider
         // ], 'public');
 
         // Register your button component view
-        $this->loadViewComponentsAs('giraffeui', [
-            \JayAitch\GiraffeUI\Components\Button::class => 'giraffeui::button',
-        ]);
+        // $this->loadViewComponentsAs('giraffeui', [
+        //     \JayAitch\GiraffeUI\Components\Button::class => 'giraffeui::button',
+        // ]);
+
+        \Illuminate\Support\Facades\Blade::component('giraffeui::button', \JayAitch\GiraffeUI\Components\Button::class);
+
     }
 
     /**

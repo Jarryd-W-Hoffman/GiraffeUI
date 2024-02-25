@@ -12,6 +12,13 @@
             "email": "jarryd.hoffman@windowslive.com"
         }
     ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "JayAitch\\GiraffeUI\\GiraffeUIServiceProvider"
+            ]
+        }
+    },
     "minimum-stability": "dev",
     "require": {}
 }
