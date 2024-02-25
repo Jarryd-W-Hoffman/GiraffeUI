@@ -4,7 +4,7 @@ namespace JayAitch\GiraffeUI;
 
 use Illuminate\Support\ServiceProvider;
 
-class YourPackageServiceProvider extends ServiceProvider
+class GiraffeUIServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any package services.
