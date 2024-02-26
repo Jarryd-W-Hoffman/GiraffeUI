@@ -92,7 +92,7 @@ class GiraffeUIInstallCommand extends Command
             echo $output;
         });
 
-        $livewireProcess->check();
+        // $livewireProcess->check();
 
         // Install Volt if requested
         if ($shouldInstallVolt == 'Yes') {
@@ -103,7 +103,7 @@ class GiraffeUIInstallCommand extends Command
                 echo $output;
             });
 
-            $voltProcess->check();
+            // $voltProcess->check();
 
             $this->info("\nRunning Volt installer...\n");
 
@@ -112,7 +112,7 @@ class GiraffeUIInstallCommand extends Command
                 echo $output;
             });
 
-            $voltInstallerProcess->check();
+            // $voltInstallerProcess->check();
         }
 
     }
