@@ -20,5 +20,7 @@
         }
     },
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+        "laravel/prompts": "^0.1.15"
+    }
 }
