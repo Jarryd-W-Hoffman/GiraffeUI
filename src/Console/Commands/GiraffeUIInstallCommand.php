@@ -129,8 +129,15 @@ class GiraffeUIInstallCommand extends Command
         $os = PHP_OS;
         $findCommand = stripos($os, 'WIN') === 0 ? 'where' : 'which';
 
-        $yarn = Process::run($findCommand . ' yarn')->output();
-        $npm = Process::run($findCommand . ' npm')->output();
+        // $yarn = Process::run($findCommand . ' yarn')->output();
+        $yarnProcess = new Process([$findCommand, 'yarn']);
+        $yarnProcess->run();
+        $yarn = $yarnProcess->getOutput();
+
+        // $npm = Process::run($findCommand . ' npm')->output();
+        $npmProcess = new Process([$findCommand, 'npm']);
+        $npmProcess->run();
+        $npm = $npmProcess->getOutput();
 
         $options = [];
 
