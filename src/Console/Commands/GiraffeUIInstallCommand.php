@@ -61,15 +61,28 @@ class GiraffeUIInstallCommand extends Command
 
     public function installLivewire(string $shouldInstallVolt)
     {
+        // $this->info("\nInstalling Livewire...\n");
+
+        // $extra = $shouldInstallVolt == 'Yes'
+        //     ? ' livewire/volt && php artisan volt:install'
+        //     : '';
+
+        // Process::run("composer require livewire/livewire $extra", function (string $type, string $output) {
+        //     echo $output;
+        // })->throw();
+
         $this->info("\nInstalling Livewire...\n");
 
         $extra = $shouldInstallVolt == 'Yes'
             ? ' livewire/volt && php artisan volt:install'
             : '';
 
-        Process::run("composer require livewire/livewire $extra", function (string $type, string $output) {
+        $process = new Process(["composer", "require", "livewire/livewire", $extra]);
+        $process->run(function (string $type, string $output) {
             echo $output;
-        })->throw();
+        });
+
+        $process->throw();
     }
 
     public function setupTailwindDaisy(string $packageManagerCommand)
