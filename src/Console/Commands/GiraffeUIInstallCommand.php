@@ -71,18 +71,50 @@ class GiraffeUIInstallCommand extends Command
         //     echo $output;
         // })->throw();
 
+        // $this->info("\nInstalling Livewire...\n");
+
+        // $extra = $shouldInstallVolt == 'Yes'
+        //     ? ' livewire/volt && php artisan volt:install'
+        //     : '';
+
+        // $process = new Process(["composer", "require", "livewire/livewire", $extra]);
+        // $process->run(function (string $type, string $output) {
+        //     echo $output;
+        // });
+
+        // $process->throw();
+
         $this->info("\nInstalling Livewire...\n");
 
-        $extra = $shouldInstallVolt == 'Yes'
-            ? ' livewire/volt && php artisan volt:install'
-            : '';
-
-        $process = new Process(["composer", "require", "livewire/livewire", $extra]);
-        $process->run(function (string $type, string $output) {
+        // Install Livewire
+        $livewireProcess = new Process(["composer", "require", "livewire/livewire"]);
+        $livewireProcess->run(function (string $type, string $output) {
             echo $output;
         });
 
-        $process->throw();
+        $livewireProcess->throw();
+
+        // Install Volt if requested
+        if ($shouldInstallVolt == 'Yes') {
+            $this->info("\nInstalling Volt...\n");
+
+            $voltProcess = new Process(["composer", "require", "livewire/volt"]);
+            $voltProcess->run(function (string $type, string $output) {
+                echo $output;
+            });
+
+            $voltProcess->throw();
+
+            $this->info("\nRunning Volt installer...\n");
+
+            $voltInstallerProcess = new Process(["php", "artisan", "volt:install"]);
+            $voltInstallerProcess->run(function (string $type, string $output) {
+                echo $output;
+            });
+
+            $voltInstallerProcess->throw();
+        }
+
     }
 
     public function setupTailwindDaisy(string $packageManagerCommand)
