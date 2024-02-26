@@ -122,10 +122,17 @@ class GiraffeUIInstallCommand extends Command
         /**
          * Install Tailwind
          */
+        // $this->info("\nInstalling Tailwind...\n");
+        // Process::run("$packageManagerCommand tailwindcss postcss autoprefixer", function (string $type, string $output) {
+        //     echo $output;
+        // })->throw();
+
         $this->info("\nInstalling Tailwind...\n");
-        Process::run("$packageManagerCommand tailwindcss postcss autoprefixer", function (string $type, string $output) {
+
+        $process = new Process([$packageManagerCommand, 'tailwindcss', 'postcss', 'autoprefixer']);
+        $process->run(function (string $type, string $output) {
             echo $output;
-        })->throw();
+        });
 
         /**
          * Setup app.css
