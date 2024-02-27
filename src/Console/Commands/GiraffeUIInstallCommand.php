@@ -17,33 +17,39 @@ class GiraffeUIInstallCommand extends Command
      * The name and signature of the console command.
      *
      * @var string
-     */
+    **/
     protected $signature = 'gui:install';
 
     /**
      * The console command description.
      *
      * @var string
-     */
+    **/
     protected $description = 'Install GiraffeUI and its dependencies.';
 
+    /**
+     * The directory separator for the current OS.
+     *
+     * @var string
+    **/
     protected $ds = DIRECTORY_SEPARATOR;
 
     /**
      * Execute the console command.
-     */
+    **/
     public function handle()
     {
-        $this->info("🦒 GiraffeUI Installer 🦒");
+        $this->info("GiraffeUI Installer");
+        $this->newline();
+        $this->line("A sleek and minimilistic UI package designed to seamlessly integrate with the TALL stack.");
+        $this->newline();
 
-        // Install Volt ?
-        $shouldInstallVolt = $this->askForVolt();
+        // Install all required composer packages.
+        installComposerPackages();
 
         // Yarn or Npm ?
         $packageManagerCommand = $this->askForPackageInstaller();
 
-        // Install Livewire/Volt
-        $this->installLivewire($shouldInstallVolt);
 
         // Setup Tailwind and Daisy
         $this->setupTailwindDaisy($packageManagerCommand);
@@ -51,85 +57,82 @@ class GiraffeUIInstallCommand extends Command
         // Copy stubs if it is a brand-new project
         // $this->copyStubs($shouldInstallVolt);
 
+        // Publish config
+        $this->info("\nPublishing configuration...\n");
         Artisan::call('vendor:publish --force --tag giraffeui.config');
 
         // Clear view cache
+        $this->info("\nClearing view cache...\n");
         Artisan::call('view:clear');
 
         $this->info("\n✅   Done! Run `yarn dev` or `npm run dev`");
     }
 
-    public function installLivewire(string $shouldInstallVolt)
+    
+    /**
+     * Install all required composer packages.
+     *
+     * This method installs required composer packages including:
+     * - livewire/livewire
+     * - livewire/volt
+     * 
+     * @return void
+    **/
+    public function installComposerPackages()
     {
-        // $this->info("\nInstalling Livewire...\n");
+        // Inform user about Livewire installation.
+        $this->info("\nInstalling Laravel Livewire (livewire/livewire)...\n");
 
-        // $extra = $shouldInstallVolt == 'Yes'
-        //     ? ' livewire/volt && php artisan volt:install'
-        //     : '';
-
-        // Process::run("composer require livewire/livewire $extra", function (string $type, string $output) {
-        //     echo $output;
-        // })->throw();
-
-        // $this->info("\nInstalling Livewire...\n");
-
-        // $extra = $shouldInstallVolt == 'Yes'
-        //     ? ' livewire/volt && php artisan volt:install'
-        //     : '';
-
-        // $process = new Process(["composer", "require", "livewire/livewire", $extra]);
-        // $process->run(function (string $type, string $output) {
-        //     echo $output;
-        // });
-
-        // $process->throw();
-
-        $this->info("\nInstalling Livewire...\n");
-
-        // Install Livewire
+        // Create a process for installing Livewire.
         $livewireProcess = new Process(["composer", "require", "livewire/livewire"]);
-        $livewireProcess->run(function (string $type, string $output) {
-            echo $output;
-        });
+        $this->runProcessWithOutput($livewireProcess);
 
-        // $livewireProcess->check();
+        // Inform user about successful Livewire installation.
+        $this->info("\nLaravel Livewire installed successfully!\n");
 
-        // Install Volt if requested
-        if ($shouldInstallVolt == 'Yes') {
-            $this->info("\nInstalling Volt...\n");
+        // Prompt user for Livewire Volt installation preference.
+        $installVolt = $this->choice(
+            'Would you like to install Livewire Volt (livewire/volt)?',
+            ['Yes', 'No'],
+            $allowMultipleSelections = false
+        );
 
+        // Install Volt if user chooses to.
+        if ($installVolt == 'Yes') {
+            // Inform user about Livewire Volt installation.
+            $this->info("\nInstalling Livewire Volt (livewire/volt)...\n");
+
+            // Create a process for installing Livewire Volt.
             $voltProcess = new Process(["composer", "require", "livewire/volt"]);
-            $voltProcess->run(function (string $type, string $output) {
-                echo $output;
-            });
+            $this->runProcessWithOutput($voltProcess);
 
-            // $voltProcess->check();
+            // Inform user about successful Livewire Volt installation.
+            $this->info("\Livewire Volt installed successfully!\n");
 
-            $this->info("\nRunning Volt installer...\n");
+            // Inform user about Livewire Volt Service Provider installation.
+            $this->info("\nInstalling Livewire Volt Service Provider...\n");
 
+            // Create a process for running Volt installer.
             $voltInstallerProcess = new Process(["php", "artisan", "volt:install"]);
-            $voltInstallerProcess->run(function (string $type, string $output) {
-                echo $output;
-            });
+            $this->runProcessWithOutput($voltInstallerProcess);
 
-            // $voltInstallerProcess->check();
+            // Inform user about successful Livewire Volt Service Provider installation.
+            $this->info("\Livewire Volt Service Provider installed successfully!\n");
         }
+    }
+
+    public function installNodeModules(string $packageManager) {
+        $this->info("\nInstalling TailwindCSS...\n");
 
     }
 
     public function setupTailwindDaisy(string $packageManagerCommand)
     {
-        /**
-         * Install Tailwind
-         */
-        // $this->info("\nInstalling Tailwind...\n");
-        // Process::run("$packageManagerCommand tailwindcss postcss autoprefixer", function (string $type, string $output) {
-        //     echo $output;
-        // })->throw();
-
         $this->info("\nInstalling Tailwind...\n");
 
-        $process = new Process([$packageManagerCommand, 'tailwindcss', 'postcss', 'autoprefixer']);
+        $packageManagerCommand = explode(' ', $packageManagerCommand); // Split the command string into an array
+        
+        $process = new Process(array_merge($packageManagerCommand, ['install', '--save-dev', 'tailwindcss', 'postcss', 'autoprefixer']));
         $process->run(function (string $type, string $output) {
             echo $output;
         });
@@ -137,7 +140,6 @@ class GiraffeUIInstallCommand extends Command
         /**
          * Setup app.css
          */
-
         $cssPath = base_path() . "{$this->ds}resources{$this->ds}css{$this->ds}app.css";
         $css = File::get($cssPath);
 
@@ -213,17 +215,6 @@ class GiraffeUIInstallCommand extends Command
         );
     }
 
-    /**
-     * Also install Volt?
-     */
-    public function askForVolt(): string
-    {
-        return select(
-            'Also install `livewire/volt` ?',
-            ['Yes', 'No'],
-            hint: 'No matter what is your choice, it always installs `livewire/livewire`'
-        );
-    }
 
     private function copyFile(string $source, string $destination): void
     {
@@ -233,5 +224,19 @@ class GiraffeUIInstallCommand extends Command
         if (! copy($source, $destination)) {
             throw new RuntimeException("Failed to copy {$source} to {$destination}");
         }
+    }
+
+    /**
+     * Run a process and display its output.
+     *
+     * @param Process $process
+     * 
+     * @return void
+    **/
+    private function runProcessWithOutput(Process $process)
+    {
+        $process->run(function (string $type, string $output) {
+            echo $output;
+        });
     }
 }
