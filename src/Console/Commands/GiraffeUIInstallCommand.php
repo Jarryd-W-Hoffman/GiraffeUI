@@ -39,38 +39,29 @@ class GiraffeUIInstallCommand extends Command
     **/
     public function handle()
     {
+        // Display the welcome message.
         $this->info("GiraffeUI Installer");
         $this->newline();
         $this->line("A sleek and minimilistic UI package designed to seamlessly integrate with the TALL stack.");
         $this->newline();
 
         // Install all required composer packages.
-        installComposerPackages();
+        $this->installComposerPackages();
 
         // Install all required node modules.
-        installNodeModules();
+        $this->installNodeModules();
 
-        // Yarn or Npm ?
-        $packageManagerCommand = $this->askForPackageInstaller();
-
-
-        // Setup Tailwind and Daisy
-        $this->setupTailwindDaisy($packageManagerCommand);
-
-        // Copy stubs if it is a brand-new project
-        // $this->copyStubs($shouldInstallVolt);
-
-        // Publish config
-        $this->info("\nPublishing configuration...\n");
+        // Publish config file to allow user to customize the package.
+        $this->info("\nPublishing configuration...");
         Artisan::call('vendor:publish --force --tag giraffeui.config');
 
-        // Clear view cache
-        $this->info("\nClearing view cache...\n");
+        // Clear view cache to ensure the new components are available.
+        $this->info("Clearing view cache...\n");
         Artisan::call('view:clear');
 
-        $this->info("\n✅   Done! Run `yarn dev` or `npm run dev`");
+        // Inform user about successful installation.
+        $this->info("\nYou're all set! You can now start building your application with GiraffeUI.\n");
     }
-
     
     /**
      * Install all required composer packages.
@@ -124,27 +115,29 @@ class GiraffeUIInstallCommand extends Command
         }
     }
 
-    public function installNodeModules(string $packageManager) {
-        
+    /**
+     * Install all required node modules.
+     *
+     * This method installs required node modules including:
+     * - tailwindcss
+     * 
+     * @return void
+    **/
+    public function installNodeModules() {
+        // Configure package manager based on the project.
+        $packageManager = $this->configurePackageManager();
 
+        // Inform the user about the installation process.
         $this->info("\nInstalling TailwindCSS...\n");
 
-    }
+        // Split the package manager string into an array.
+        $packageManager = explode(' ', $packageManager);
 
-    public function setupTailwindDaisy(string $packageManagerCommand)
-    {
-        $this->info("\nInstalling Tailwind...\n");
+        // Create a process for installing tailwindCSS.
+        $process = new Process(array_merge($packageManager, ['install', '--save-dev', 'tailwindcss', 'postcss', 'autoprefixer']));
+        $this->runProcessWithOutput($process);
 
-        $packageManagerCommand = explode(' ', $packageManagerCommand); // Split the command string into an array
-        
-        $process = new Process(array_merge($packageManagerCommand, ['install', '--save-dev', 'tailwindcss', 'postcss', 'autoprefixer']));
-        $process->run(function (string $type, string $output) {
-            echo $output;
-        });
-
-        /**
-         * Setup app.css
-         */
+        // Update the project's CSS file with TailwindCSS if not already included.
         $cssPath = base_path() . "{$this->ds}resources{$this->ds}css{$this->ds}app.css";
         $css = File::get($cssPath);
 
@@ -153,12 +146,10 @@ class GiraffeUIInstallCommand extends Command
             File::put($cssPath, str($css)->prepend($stub));
         }
 
-        /**
-         * Setup tailwind.config.js
-         */
-
+        // Set paths for Tailwind configuration and related files.
         $tailwindJsPath = base_path() . "{$this->ds}tailwind.config.js";
 
+         // Check if Tailwind configuration file exists; if not, copy stubs.
         if (! File::exists($tailwindJsPath)) {
             $this->copyFile(__DIR__ . "/../../../stubs/tailwind.config.js", "tailwind.config.js");
             $this->copyFile(__DIR__ . "/../../../stubs/postcss.config.js", "postcss.config.js");
@@ -166,21 +157,25 @@ class GiraffeUIInstallCommand extends Command
             return;
         }
 
-        /**
-         * Setup Tailwind contents
-         */
+        // Update Tailwind configuration to include GiraffeUI paths.
         $tailwindJs = File::get($tailwindJsPath);
         $originalContents = str($tailwindJs)->after('contents')->after('[')->before(']');
 
+        // Check if GiraffeUI paths are already present; if yes, return.
         if ($originalContents->contains('jayaitch/giraffeui')) {
             return;
         }
 
+        // Add GiraffeUI paths to Tailwind configuration.
         $contents = $originalContents->squish()->trim()->remove(' ')->explode(',')->add('"./vendor/jayaitch/giraffeui/resources/**/*.blade.php"')->filter()->implode(', ');
         $contents = str($contents)->prepend("\n\t\t")->replace(',', ",\n\t\t")->append("\r\n\t");
         $contents = str($tailwindJs)->replace($originalContents, $contents);
 
+        // Update the Tailwind configuration file.
         File::put($tailwindJsPath, $contents);
+
+        // Inform the user about the successful installation.
+        $this->info("\nTailwindCSS installed successfully!\n");
     }
 
     /**
@@ -188,7 +183,7 @@ class GiraffeUIInstallCommand extends Command
      *
      * @return string
     **/
-    public function askForPackageInstaller(): string
+    public function configurePackageManager(): string
     {
         // Determine the appropriate command to find executables based on the operating system.
         $os = PHP_OS;
@@ -215,7 +210,7 @@ class GiraffeUIInstallCommand extends Command
 
         // If no package manager options are available, display an error message and exit.
         if (count($options) === 0) {
-            $this->error("You need yarn or npm installed.");
+            $this->error("No package manager found. Please install either Yarn or NPM to continue.");
             exit;
         }
 
@@ -227,22 +222,11 @@ class GiraffeUIInstallCommand extends Command
         );
     }
 
-
-    // private function copyFile(string $source, string $destination): void
-    // {
-    //     $source = str_replace('/', DIRECTORY_SEPARATOR, $source);
-    //     $destination = str_replace('/', DIRECTORY_SEPARATOR, $destination);
-
-    //     if (! copy($source, $destination)) {
-    //         throw new RuntimeException("Failed to copy {$source} to {$destination}");
-    //     }
-    // }
-
     /**
      * Copy a file from the source to the destination.
      *
-     * @param string $source      The source file path.
-     * @param string $destination The destination file path.
+     * @param string $source - The source file path.
+     * @param string $destination - The destination file path.
      *
      * @return void
      *

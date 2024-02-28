@@ -48,4 +48,19 @@ class GiraffeUIServiceProvider extends ServiceProvider
             return new GiraffeUI;
         });
     }
+
+    /**
+     * Console-specific booting.
+    **/
+    protected function bootForConsole()
+    {
+        // Publishing the configuration file.
+        $this->publishes([
+            __DIR__ . '/../config/giraffeui.php' => config_path('giraffeui.php'),
+        ], 'giraffeui.config');
+
+        $this->commands([
+            GiraffeUIInstallCommand::class,
+        ]);
+    }
 }
