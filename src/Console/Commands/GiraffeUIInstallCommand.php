@@ -47,6 +47,9 @@ class GiraffeUIInstallCommand extends Command
         // Install all required composer packages.
         installComposerPackages();
 
+        // Install all required node modules.
+        installNodeModules();
+
         // Yarn or Npm ?
         $packageManagerCommand = $this->askForPackageInstaller();
 
@@ -122,6 +125,8 @@ class GiraffeUIInstallCommand extends Command
     }
 
     public function installNodeModules(string $packageManager) {
+        
+
         $this->info("\nInstalling TailwindCSS...\n");
 
     }
@@ -178,50 +183,76 @@ class GiraffeUIInstallCommand extends Command
         File::put($tailwindJsPath, $contents);
     }
 
+    /**
+     * Prompt the user for their preferred package manager and return the selected option.
+     *
+     * @return string
+    **/
     public function askForPackageInstaller(): string
     {
+        // Determine the appropriate command to find executables based on the operating system.
         $os = PHP_OS;
         $findCommand = stripos($os, 'WIN') === 0 ? 'where' : 'which';
 
-        // $yarn = Process::run($findCommand . ' yarn')->output();
-        $yarnProcess = new Process([$findCommand, 'yarn']);
-        $yarnProcess->run();
-        $yarn = $yarnProcess->getOutput();
+        // Array containing package manager options and their corresponding installation commands.
+        $packageManagers = [
+            'yarn' => 'yarn add -D',
+            'npm' => 'npm install --save-dev',
+        ];
 
-        // $npm = Process::run($findCommand . ' npm')->output();
-        $npmProcess = new Process([$findCommand, 'npm']);
-        $npmProcess->run();
-        $npm = $npmProcess->getOutput();
+        // Filter available package managers based on whether the corresponding executable is found.
+        $options = array_filter(array_map(function ($manager) use ($findCommand) {
+            $process = new Process([$findCommand, $manager]);
+            $process->run();
 
-        $options = [];
+            // If the output is not empty, consider the package manager as available.
+            if (Str::of($process->getOutput())->isNotEmpty()) {
+                return $manager;
+            }
 
-        if (Str::of($yarn)->isNotEmpty()) {
-            $options = array_merge($options, ['yarn add -D' => 'yarn']);
-        }
+            return null;
+        }, array_keys($packageManagers)));
 
-        if (Str::of($npm)->isNotEmpty()) {
-            $options = array_merge($options, ['npm install --save-dev' => 'npm']);
-        }
-
-        if (count($options) == 0) {
+        // If no package manager options are available, display an error message and exit.
+        if (count($options) === 0) {
             $this->error("You need yarn or npm installed.");
-
             exit;
         }
 
-        return select(
-            label: 'Install with ...',
-            options: $options
+        // Prompt user for package manager preference.
+        return $this->choice(
+            'Which package manager would you like to use?',
+            $packageManagers,
+            $allowMultipleSelections = false
         );
     }
 
 
+    // private function copyFile(string $source, string $destination): void
+    // {
+    //     $source = str_replace('/', DIRECTORY_SEPARATOR, $source);
+    //     $destination = str_replace('/', DIRECTORY_SEPARATOR, $destination);
+
+    //     if (! copy($source, $destination)) {
+    //         throw new RuntimeException("Failed to copy {$source} to {$destination}");
+    //     }
+    // }
+
+    /**
+     * Copy a file from the source to the destination.
+     *
+     * @param string $source      The source file path.
+     * @param string $destination The destination file path.
+     *
+     * @return void
+     *
+     * @throws RuntimeException If the file copy fails.
+    **/
     private function copyFile(string $source, string $destination): void
     {
-        $source = str_replace('/', DIRECTORY_SEPARATOR, $source);
-        $destination = str_replace('/', DIRECTORY_SEPARATOR, $destination);
-
-        if (! copy($source, $destination)) {
+        try {
+            File::copy($source, $destination);
+        } catch (\Exception $e) {
             throw new RuntimeException("Failed to copy {$source} to {$destination}");
         }
     }
