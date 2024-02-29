@@ -167,7 +167,7 @@ class GiraffeUIInstallCommand extends Command
         }
 
         // Add GiraffeUI paths to Tailwind configuration.
-        $contents = $originalContents->squish()->trim()->remove(' ')->explode(',')->add('"./vendor/jayaitch/giraffeui/resources/**/*.blade.php"')->filter()->implode(', ');
+        $contents = $originalContents->squish()->trim()->remove(' ')->explode(',')->add('"./vendor/jayaitch/giraffeui/src/resources/**/*.blade.php"')->filter()->implode(', ');
         $contents = str($contents)->prepend("\n\t\t")->replace(',', ",\n\t\t")->append("\r\n\t");
         $contents = str($tailwindJs)->replace($originalContents, $contents);
 
