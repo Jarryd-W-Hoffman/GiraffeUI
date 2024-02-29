@@ -51,6 +51,9 @@ class GiraffeUIInstallCommand extends Command
         // Install all required node modules.
         $this->installNodeModules();
 
+        // Install the package stubs.
+        $this->installStubs();
+
         // Publish config file to allow user to customize the package.
         $this->info("\nPublishing configuration...");
         Artisan::call('vendor:publish --force --tag giraffeui.config');
@@ -225,10 +228,22 @@ class GiraffeUIInstallCommand extends Command
     /**
      * Install the package stubs.
      * 
+     * TODO: Check if the layouts directory already exists and prompt the user to overwrite, skip or rename.
+     * 
      * @return void
     **/
     public function installStubs(): void {
-        
+        // Inform the user about the installation process.
+        $this->info("\nInstalling GiraffeUI stubs...\n");
+
+        // Define the path to the layouts directory within the project's resources.
+        $layoutsPath = "resources{$this->ds}views{$this->ds}components{$this->ds}layouts";
+
+        // Ensure that the layouts directory exists, create if not.
+        $this->createDirectoryIfNotExists($layoutsPath);
+
+        // Copy the default app layout stub file to the layouts directory.
+        $this->copyFile(__DIR__ . "/../../../stubs/app.blade.php", "{$layoutsPath}{$this->ds}app.blade.php");
     }
 
     /**
