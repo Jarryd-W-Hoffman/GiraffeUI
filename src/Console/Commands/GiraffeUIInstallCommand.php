@@ -223,6 +223,15 @@ class GiraffeUIInstallCommand extends Command
     }
 
     /**
+     * Install the package stubs.
+     * 
+     * @return void
+    **/
+    public function installStubs(): void {
+        
+    }
+
+    /**
      * Copy a file from the source to the destination.
      *
      * @param string $source - The source file path.
