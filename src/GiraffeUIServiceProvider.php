@@ -23,11 +23,13 @@ class GiraffeUIServiceProvider extends ServiceProvider
         // Usage: <x-gui::{component} />
         Blade::component('gui::button', Button::class);
 
+        // Publishing the configuration file.
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/giraffeui.php' => config_path('giraffeui.php'),
             ], 'giraffeui-config');
 
+            // Registering package commands.
             $this->commands([
                 GiraffeUIInstallCommand::class,
             ]);
@@ -47,20 +49,5 @@ class GiraffeUIServiceProvider extends ServiceProvider
         $this->app->singleton('giraffeui', function ($app) {
             return new GiraffeUI;
         });
-    }
-
-    /**
-     * Console-specific booting.
-    **/
-    protected function bootForConsole()
-    {
-        // Publishing the configuration file.
-        $this->publishes([
-            __DIR__ . '/../config/giraffeui.php' => config_path('giraffeui.php'),
-        ], 'giraffeui.config');
-
-        $this->commands([
-            GiraffeUIInstallCommand::class,
-        ]);
     }
 }
