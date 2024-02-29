@@ -259,8 +259,10 @@ class GiraffeUIInstallCommand extends Command
     private function copyFile(string $source, string $destination): void
     {
         try {
+            // Use Laravel's File facade to copy the file.
             File::copy($source, $destination);
         } catch (\Exception $e) {
+            // If an exception occurs during the file copy, throw a RuntimeException.
             throw new RuntimeException("Failed to copy {$source} to {$destination}");
         }
     }
@@ -268,13 +270,15 @@ class GiraffeUIInstallCommand extends Command
     /**
      * Run a process and display its output.
      *
-     * @param Process $process
+     * @param Process $process - The Symfony Process instance to be executed.
      * 
      * @return void
     **/
     private function runProcessWithOutput(Process $process)
     {
+        // Run the process asynchronously and capture the output.
         $process->run(function (string $type, string $output) {
+            // Echo the output as it is received.
             echo $output;
         });
     }
