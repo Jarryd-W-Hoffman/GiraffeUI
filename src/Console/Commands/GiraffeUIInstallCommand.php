@@ -240,7 +240,7 @@ class GiraffeUIInstallCommand extends Command
         $layoutsPath = "resources{$this->ds}views{$this->ds}components{$this->ds}layouts";
 
         // Ensure that the layouts directory exists, create if not.
-        $this->createDirectoryIfNotExists($layoutsPath);
+        $this->createDirectory($layoutsPath);
 
         // Copy the default app layout stub file to the layouts directory.
         $this->copyFile(__DIR__ . "/../../../stubs/app.blade.php", "{$layoutsPath}{$this->ds}app.blade.php");
@@ -264,6 +264,22 @@ class GiraffeUIInstallCommand extends Command
         } catch (\Exception $e) {
             // If an exception occurs during the file copy, throw a RuntimeException.
             throw new RuntimeException("Failed to copy {$source} to {$destination}");
+        }
+    }
+
+    /**
+     * Create a directory if it does not already exist.
+     *
+     * @param string $path The path of the directory to be created.
+     * 
+     * @return void
+    **/
+    private function createDirectory(string $path): void
+    {
+        // Check if the directory already exists
+        if (!file_exists($path)) {
+            // Create the directory with read, write, and execute permissions for everyone
+            mkdir($path, 0777, true);
         }
     }
 
