@@ -4,10 +4,10 @@
     @endif
     type="{{ $type }}" 
     {{ $disabled ? 'disabled' : '' }} 
-{{ 
+    {{ 
         $attributes->merge(
             [
-                'class' => 'rounded px-4 py-2 focus:outline-none ' . $this->getColorClass()
+                'class' => 'rounded px-4 py-2 focus:outline-none'
             ]
         ) 
     }}
