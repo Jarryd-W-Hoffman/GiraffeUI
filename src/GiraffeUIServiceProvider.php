@@ -27,7 +27,7 @@ class GiraffeUIServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/giraffeui.php' => config_path('giraffeui.php'),
-            ], 'giraffeui-config');
+            ], 'giraffeui.config');
 
             // Registering package commands.
             $this->commands([

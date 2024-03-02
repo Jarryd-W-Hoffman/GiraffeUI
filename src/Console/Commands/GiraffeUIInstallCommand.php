@@ -56,7 +56,8 @@ class GiraffeUIInstallCommand extends Command
 
         // Publish config file to allow user to customize the package.
         $this->info("\nPublishing configuration...");
-        Artisan::call('vendor:publish --force --tag giraffeui.config');
+        Artisan::call('vendor:publish --force --tag=giraffeui.config');
+        
 
         // Clear view cache to ensure the new components are available.
         $this->info("Clearing view cache...\n");

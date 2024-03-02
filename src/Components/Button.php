@@ -37,6 +37,22 @@ class Button extends Component
         $this->color = $color;
     }
 
+    public function getColorClass()
+    {
+        $colorClasses = [
+            'primary' => 'bg-' . config('giraffeui.colors.primary') . ' text-white',
+            'secondary' => 'bg-' . config('giraffeui.colors.secondary') . ' text-white',
+            'success' => 'bg-' . config('giraffeui.colors.success') . ' text-white',
+            'warning' => 'bg-' . config('giraffeui.colors.warning') . ' text-black',
+            'info' => 'bg-' . config('giraffeui.colors.info') . ' text-white',
+            'danger' => 'bg-' . config('giraffeui.colors.danger') . ' text-white',
+            'light' => 'bg-' . config('giraffeui.colors.light') . ' text-black',
+            'dark' => 'bg-' . config('giraffeui.colors.dark') . ' text-white',
+        ];
+
+        return $colorClasses[$this->color] ?? 'bg-' . config('giraffeui.colors.primary') . '  text-white';
+    }
+
     /**
      * Get the view / contents that represent the component.
      *
