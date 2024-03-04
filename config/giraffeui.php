@@ -35,11 +35,35 @@ return [
             'shade' => '500',
             'opacity' => null,
         ],
-        'success' => '#38c172',
-        'danger' => '#e3342f',
-        'warning' => '#ffed4a',
-        'info' => '#3490dc',
-        'light' => '#f8f9fa',
-        'dark' => '#343a40',
+        'success' => [
+            'color' => 'green',
+            'shade' => '600',
+            'opacity' => null,
+        ],
+        'danger' => [
+            'color' => 'red',
+            'shade' => '500',
+            'opacity' => null,
+        ],
+        'warning' => [
+            'color' => 'yellow',
+            'shade' => '400',
+            'opacity' => null,
+        ],
+        'info' => [
+            'color' => 'teal',
+            'shade' => '400',
+            'opacity' => null,
+        ],
+        'light' => [
+            'color' => 'gray',
+            'shade' => '100',
+            'opacity' => null,
+        ],
+        'dark' => [
+            'color' => 'gray',
+            'shade' => '900',
+            'opacity' => null,
+        ],
     ],
 ];
