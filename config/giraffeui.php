@@ -25,8 +25,16 @@ return [
     */
 
     'colors' => [
-        'primary' => '#3490dc',
-        'secondary' => '#ffed4a',
+        'primary' => [
+            'color' => 'blue',
+            'shade' => '500',
+            'opacity' => null,
+        ],
+        'secondary' => [
+            'color' => 'gray',
+            'shade' => '500',
+            'opacity' => null,
+        ],
         'success' => '#38c172',
         'danger' => '#e3342f',
         'warning' => '#ffed4a',

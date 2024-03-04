@@ -37,6 +37,25 @@ class Button extends Component
         $this->color = $color;
     }
 
+    public function getColorStyles()
+    {
+        $colors = config('giraffeui.colors');
+        $colorConfig = $colors[$this->color] ?? null;
+
+        if ($colorConfig && is_array($colorConfig)) {
+            $baseColor = $colorConfig['color'] ?? null;
+            $shade = $colorConfig['shade'] ?? '500';
+            $opacity = $colorConfig['opacity'] ?? null;
+
+            if ($baseColor) {
+                $opacitySuffix = $opacity !== null ? "/{$opacity}" : '';
+                return "bg-{$baseColor}-{$shade}{$opacitySuffix}";
+            }
+        }
+
+        return $this->color;
+    }
+
     /**
      * Get the view / contents that represent the component.
      *
