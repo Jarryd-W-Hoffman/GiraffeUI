@@ -122,25 +122,43 @@ return [
     | Size Settings
     |--------------------------------------------------------------------------
     |
-    | Define size settings for GiraffeUI components.
+    | Define size settings for GiraffeUI components. Customize the spacing
+    | and text size of various UI elements by configuring the size settings
+    | below. The 'sizes' array consists of predefined size schemes for small,
+    | default, and large components.
+    |
+    | Each size scheme is defined by the following structure:
+    |
+    | 'size_name' => [
+    |     'horizontal_spacing' => 'spacing_value', // Horizontal spacing for the component (relates to Tailwind utility classes, e.g., 2 = px-2)
+    |     'vertical_spacing' => 'spacing_value',   // Vertical spacing for the component (relates to Tailwind utility classes)
+    |     'text_size' => 'text_size_value',        // Text size for the component (relates to Tailwind utility classes)
+    | ],
+    |
+    | You can add custom size properties by following the same template.
+    | Simply add a new key with your desired 'size_name', and provide
+    | the 'horizontal_spacing', 'vertical_spacing', and 'text_size' values accordingly.
     |
     */
 
     'sizes' => [
+
         'small' => [
-            'horizontal_spacing' => '2', // Horizontal spacing for small components (0.5rem || 8px)
-            'vertical_spacing' => '1', // 0.25rem || 4px
-            'text_size' => 'xs', // font-size: 0.75rem || 12px || line-height: 1rem || 16px 
+            'horizontal_spacing' => '2',
+            'vertical_spacing' => '1',
+            'text_size' => 'xs',
         ],
+
         'default' => [
-            'horizontal_spacing' => '4', // 1rem || 16px
-            'vertical_spacing' => '2', // 0.5rem || 8px
-            'text_size' => 'sm', // font-size: 0.875rem || 14px || line-height: 1.25rem || 20px
+            'horizontal_spacing' => '4',
+            'vertical_spacing' => '2',
+            'text_size' => 'sm',
         ],
+        
         'large' => [
-            'horizontal_spacing' => '6', // 1.5rem || 24px
-            'vertical_spacing' => '3', // 0.75rem || 12px
-            'text_size' => 'base', // font-size: 1rem || 16px || line-height: 1.5rem || 24px
+            'horizontal_spacing' => '6',
+            'vertical_spacing' => '3',
+            'text_size' => 'base',
         ],
     ],
 ];
