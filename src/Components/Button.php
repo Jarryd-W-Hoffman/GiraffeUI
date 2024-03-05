@@ -71,6 +71,32 @@ class Button extends Component
         return $this->color;
     }
 
+    public function getSizeStyles()
+    {
+        // Retrieve the size settings from the configuration file
+        $sizes = config('giraffeui.sizes');
+
+        // Get the size configuration for the specific size, if available.
+        $sizeConfig = $sizes[$this->size] ?? null;
+
+        if ($sizeConfig && is_array($sizeConfig)) {
+            // Extract horizontal spacing, vertical spacing, and text size from the configuration.
+            $horizontalSpacing = $sizeConfig['horizontal_spacing'] ?? '4';
+            $verticalSpacing = $sizeConfig['vertical_spacing'] ?? '2';
+            $textSize = $sizeConfig['text_size'] ?? 'sm';
+
+            if ($horizontalSpacing) {
+                // Construct the size styles with horizontal and vertical spacing, and text size.
+                $sizeStyles = "px-{$horizontalSpacing} py-{$verticalSpacing} text-{$textSize}";
+
+                // Return the generated size styles including horizontal and vertical spacing, and text size.
+                return $sizeStyles;
+            }
+        }
+
+        return $this->size;
+    }
+
     /**
      * Get the view / contents that represent the component.
      *
@@ -81,6 +107,7 @@ class Button extends Component
         return view('giraffeui::button', 
             [
                 'colorStyles' => $this->getColorStyles(),
+                'sizeStyles' => $this->getSizeStyles(),
             ]
         );
     }
