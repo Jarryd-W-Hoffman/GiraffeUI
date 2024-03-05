@@ -37,22 +37,37 @@ class Button extends Component
         $this->color = $color;
     }
 
+    /**
+     * Get the color styles based on the configured color in the GiraffeUI.
+     *
+     * @return string The generated color styles for the UI element.
+    **/
     public function getColorStyles()
     {
+        // Retrieve the configured colors from the GiraffeUI configuration file.
         $colors = config('giraffeui.colors');
+
+        // Get the color configuration for the specific color, if available.
         $colorConfig = $colors[$this->color] ?? null;
 
         if ($colorConfig && is_array($colorConfig)) {
-            $baseColor = $colorConfig['color'] ?? null;
-            $shade = $colorConfig['shade'] ?? '500';
-            $opacity = $colorConfig['opacity'] ?? null;
+            // Extract base color, shade, opacity, and text color from the configuration.
+            $baseColor = $colorConfig['base']['color'] ?? 'blue';
+            $shade = $colorConfig['base']['shade'] ?? '500';
+            $opacity = $colorConfig['base']['opacity'] ?? null;
+            $textColor = $colorConfig['text_color'] ?? 'black';
 
             if ($baseColor) {
+                // Construct the base style with color, shade, and optional opacity.
                 $opacitySuffix = $opacity !== null ? "/{$opacity}" : '';
-                return "bg-{$baseColor}-{$shade}{$opacitySuffix}";
+                $baseStyle = "bg-{$baseColor}-{$shade}{$opacitySuffix}";
+
+                // Return the generated color styles including background and text colors.
+                return "{$baseStyle} text-{$textColor}";
             }
         }
 
+        // If color configuration is not available, return the original color.
         return $this->color;
     }
 
@@ -60,9 +75,13 @@ class Button extends Component
      * Get the view / contents that represent the component.
      *
      * @return \Illuminate\Contracts\View\View|string
-     */
+    **/
     public function render()
     {
-        return view('giraffeui::button');
+        return view('giraffeui::button', 
+            [
+                'colorStyles' => $this->getColorStyles(),
+            ]
+        );
     }
 }
