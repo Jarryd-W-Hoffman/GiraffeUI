@@ -6,14 +6,47 @@ use Illuminate\View\Component;
 
 class Button extends Component
 {
-    public $text;
+    /**
+     * The color of the button.
+     *
+     * @var string
+    **/
+    public $color;
+
+    /**
+     * The size of the button.
+     *
+     * @var string
+    **/
+    public $size;
+
+    /**
+     * The link to which the button should navigate.
+     *
+     * @var string
+    **/
     public $link;
+    
+    /**
+     * Whether the link is an external link.
+     *
+     * @var bool
+    **/
+    public $external;
+
+    /**
+     * The text content of the button.
+     *
+     * @var string
+    **/
+    public $text;
+    
     public $type;
     public $disabled;
     public $fullWidth;
     public $variant;
-    public $size;
-    public $color;
+
+ 
 
     /**
      * Create a new component instance.
@@ -25,7 +58,7 @@ class Button extends Component
      * @param  bool  $disabled
      * @return void
      */
-    public function __construct($text, $link = null, $type = null, $disabled = false, $fullWidth = false, $variant = 'contained', $size = 'medium', $color = 'primary')
+    public function __construct($text, $link = null, $type = null, $disabled = false, $fullWidth = false, $variant = 'contained', $size = 'medium', $color = 'primary', $external = false)
     {
         $this->text = $text;
         $this->link = $link;
@@ -35,6 +68,7 @@ class Button extends Component
         $this->variant = $variant;
         $this->size = $size;
         $this->color = $color;
+        $this->external = $external;
     }
 
     /**
@@ -62,8 +96,20 @@ class Button extends Component
                 $opacitySuffix = $opacity !== null ? "/{$opacity}" : '';
                 $baseStyle = "bg-{$baseColor}-{$shade}{$opacitySuffix}";
 
+                // Variant-specific adjustments
+                if ($this->variant === 'contain') {
+                    // Adjust background color for contained variant
+                    $baseStyle = "bg-{$baseColor}-{$shade}{$opacitySuffix} text-{$textColor}";
+                } elseif ($this->variant === 'outline') {
+                    // Adjust border color for outlined variant
+                    $baseStyle = "bg-transparent text-{$baseColor}-${shade}{$opacitySuffix} border border-{$baseColor}-{$shade}{$opacitySuffix}";
+                } elseif ($this->variant === 'text') {
+                    // Adjust text color for text variant
+                    $baseStyle = "bg-transparent text-{$baseColor}-{$shade}{$opacitySuffix} border-none";
+                }
+
                 // Return the generated color styles including background and text colors.
-                return "{$baseStyle} text-{$textColor}";
+                return "{$baseStyle}";
             }
         }
 

@@ -1,6 +1,7 @@
 <{{ $link ? 'a' : 'button' }} 
     @if($link) 
         href="{{ $link }}" 
+        {{ $external ? 'target="_blank" rel="noopener noreferrer"' : '' }}
     @endif
     type="{{ $type }}" 
     {{ $disabled ? 'disabled' : '' }} 
