@@ -41,12 +41,33 @@ class Button extends Component
     **/
     public $text;
     
-    public $type;
+    /**
+     * Whether the button is disabled.
+     *
+     * @var bool
+    **/
     public $disabled;
+
+    /**
+     * Whether the button should take up the full width of the container.
+     *
+     * @var bool
+    **/
     public $fullWidth;
+
+    /**
+     * The variant of the button.
+     *
+     * @var string
+    **/
     public $variant;
 
+    public $type;
  
+
+    public $customLeft;
+    public $customRight;
+
 
     /**
      * Create a new component instance.
@@ -58,7 +79,7 @@ class Button extends Component
      * @param  bool  $disabled
      * @return void
      */
-    public function __construct($text, $link = null, $type = null, $disabled = false, $fullWidth = false, $variant = 'contained', $size = 'medium', $color = 'primary', $external = false)
+    public function __construct($text, $link = null, $type = null, $disabled = false, $fullWidth = false, $variant = 'contain', $size = 'default', $color = 'primary', $external = false, $customLeft = false)
     {
         $this->text = $text;
         $this->link = $link;
@@ -69,6 +90,7 @@ class Button extends Component
         $this->size = $size;
         $this->color = $color;
         $this->external = $external;
+        $this->customLeft = $customLeft;
     }
 
     /**
@@ -109,7 +131,7 @@ class Button extends Component
                 }
 
                 // Return the generated color styles including background and text colors.
-                return "{$baseStyle}";
+                return "{$baseStyle} ";
             }
         }
 
@@ -136,7 +158,7 @@ class Button extends Component
                 $sizeStyles = "px-{$horizontalSpacing} py-{$verticalSpacing} text-{$textSize}";
 
                 // Return the generated size styles including horizontal and vertical spacing, and text size.
-                return $sizeStyles;
+                return "$sizeStyles ";
             }
         }
 
