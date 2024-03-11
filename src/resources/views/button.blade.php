@@ -23,10 +23,10 @@
     }}
 >
     @if ($customLeft)
-        {{ $slot }}
+        {!! $customLeft !!}
     @endif
     {{ $text }}
     @if ($customRight)
-        {{ $slot }}
+        {!! $customRight !!}
     @endif
 </{{ $link ? 'a' : 'button' }}>

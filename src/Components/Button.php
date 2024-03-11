@@ -62,12 +62,26 @@ class Button extends Component
     **/
     public $variant;
 
-    public $type;
+    /**
+     * The type of the button.
+     *
+     * @var string
+    **/
+     public $type;
  
-
+    /**
+     * The custom content to be displayed on the left side of the button.
+     * 
+     * @var string
+    **/
     public $customLeft;
-    public $customRight;
 
+    /**
+     * The custom content to be displayed on the right side of the button.
+     * 
+     * @var string
+    **/
+    public $customRight;
 
     /**
      * Create a new component instance.
@@ -79,7 +93,7 @@ class Button extends Component
      * @param  bool  $disabled
      * @return void
      */
-    public function __construct($text, $link = null, $type = null, $disabled = false, $fullWidth = false, $variant = 'contain', $size = 'default', $color = 'primary', $external = false, $customLeft = false)
+    public function __construct($text, $link = null, $type = null, $disabled = false, $fullWidth = false, $variant = 'contain', $size = 'default', $color = 'primary', $external = false, $customLeft = null, $customRight = null)
     {
         $this->text = $text;
         $this->link = $link;
@@ -91,6 +105,7 @@ class Button extends Component
         $this->color = $color;
         $this->external = $external;
         $this->customLeft = $customLeft;
+        $this->customRight = $customRight;
     }
 
     /**
