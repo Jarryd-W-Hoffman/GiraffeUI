@@ -12,6 +12,7 @@ The GiraffeUI Button component is a flexible and customizable Laravel Blade comp
 <x-gui::button 
     text="Learn More" 
     link="https://github.com/Jarryd-W-Hoffman/GiraffeUI"
+    external
     color="primary"
     variant="contain"
     fullWidth
@@ -47,31 +48,9 @@ The GiraffeUI Button component is a flexible and customizable Laravel Blade comp
 - `customLeft` (string, optional): Custom content to be displayed on the left side of the button.
 - `customRight` (string, optional): Custom content to be displayed on the right side of the button.
 
-### Styling
+## Styling
 
 The GiraffeUI Button component generates dynamic styles based on the configured colors and sizes. You can customize these styles by updating the configurations in the `config/giraffeui.php` file.
-
-### Examples
-
-- **Basic Usage:**
-  ```php
-  <x-gui::button text="Click me" />
-  ```
-
-- **Link with Icon:**
-  ```php
-  <x-gui::button text="Visit Website" link="https://example.com" customRight='<i class="fas fa-external-link-alt"></i>' />
-  ```
-
-- **Disabled Button:**
-  ```php
-  <x-gui::button text="Disabled Button" disabled />
-  ```
-
-For more examples and customization options, refer to the provided documentation and the configuration files.
-
-
-Certainly! Let's elaborate on how the GiraffeUI Button component dynamically generates styles based on configured colors and sizes, including the option to adopt Tailwind CSS configurations.
 
 ### Dynamic Styling with GiraffeUI Configurations
 
@@ -110,7 +89,7 @@ If `use_tailwind_config` is set to `true` in the configuration, GiraffeUI allows
 module.exports = {
     extend: {
         colors: {
-            'branding_primary': '#89CFF0',
+            'branding-primary': '#89CFF0',
             // ... additional custom colors
         },
     },
@@ -118,7 +97,7 @@ module.exports = {
 };
 ```
 
-In this example, the user has defined a custom color named `branding_primary` with a hex value. With `use_tailwind_config` set to `true`, GiraffeUI will recognize and use these custom color names (e.g., `branding_primary`) instead of the default GiraffeUI color names when rendering buttons.
+In this example, the user has defined a custom color named `branding-primary` with a hex value. With `use_tailwind_config` set to `true`, GiraffeUI will recognize and use these custom color names (e.g., `branding-primary`) instead of the default GiraffeUI color names when rendering buttons.
 
 ### Configuration Switch
 
@@ -135,3 +114,29 @@ or
 ```
 
 This seamless integration allows developers to tailor the styling of GiraffeUI buttons to their preferences, whether it's based on the default GiraffeUI color palette or their custom Tailwind CSS colors.
+
+### Examples
+
+- **Basic Usage:**
+    ```php
+    <x-gui::button text="Click me" />
+    ```
+
+- **Internal Link with Right Icon:**
+    ```php
+    <x-gui::button 
+        text="Internal Page" 
+        link="{{ route('page') }}" 
+        customRight='<i class="fas fa-external-link-alt"></i>' 
+    />
+    ```
+
+- **Disabled Button:**
+    ```php
+    <x-gui::button text="Disabled Button" disabled />
+    ```
+
+For more examples and customization options, refer to the provided documentation and the configuration files.
+
+
+Certainly! Let's elaborate on how the GiraffeUI Button component dynamically generates styles based on configured colors and sizes, including the option to adopt Tailwind CSS configurations.
