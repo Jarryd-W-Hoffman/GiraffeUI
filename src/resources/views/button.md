@@ -115,7 +115,7 @@ or
 
 This seamless integration allows developers to tailor the styling of GiraffeUI buttons to their preferences, whether it's based on the default GiraffeUI color palette or their custom Tailwind CSS colors.
 
-### Examples
+## Examples
 
 - **Basic Usage:**
     ```php
@@ -137,6 +137,3 @@ This seamless integration allows developers to tailor the styling of GiraffeUI b
     ```
 
 For more examples and customization options, refer to the provided documentation and the configuration files.
-
-
-Certainly! Let's elaborate on how the GiraffeUI Button component dynamically generates styles based on configured colors and sizes, including the option to adopt Tailwind CSS configurations.
