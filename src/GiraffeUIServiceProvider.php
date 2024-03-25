@@ -5,6 +5,7 @@ namespace JayAitch\GiraffeUI;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use JayAitch\GiraffeUI\Components\Button;
+use JayAitch\GiraffeUI\Components\Table;
 use JayAitch\GiraffeUI\Console\Commands\GiraffeUIInstallCommand;
 
 class GiraffeUIServiceProvider extends ServiceProvider
@@ -22,6 +23,7 @@ class GiraffeUIServiceProvider extends ServiceProvider
         // Register the blade component aliases. 
         // Usage: <x-gui::{component} />
         Blade::component('gui::button', Button::class);
+        Blade::component('gui::table', Table::class);
 
         // Publishing the configuration file.
         if ($this->app->runningInConsole()) {

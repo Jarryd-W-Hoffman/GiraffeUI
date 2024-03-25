@@ -131,8 +131,8 @@ return [
     |
     | 'size_name' => [
     |     'horizontal_spacing' => 'spacing_value', // Horizontal spacing for the component (relates to Tailwind utility classes, e.g., 2 = px-2)
-    |     'vertical_spacing' => 'spacing_value',   // Vertical spacing for the component (relates to Tailwind utility classes)
-    |     'text_size' => 'text_size_value',        // Text size for the component (relates to Tailwind utility classes)
+    |     'vertical_spacing' => 'spacing_value',   // Vertical spacing for the component (relates to Tailwind utility classes, e.g., 1 = py-1)
+    |     'text_size' => 'text_size_value',        // Text size for the component (relates to Tailwind utility classes, e.g., xs = text-xs)
     | ],
     |
     | You can add custom size properties by following the same template.

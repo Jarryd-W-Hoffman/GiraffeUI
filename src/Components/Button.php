@@ -84,17 +84,36 @@ class Button extends Component
     public $customRight;
 
     /**
-     * Create a new component instance.
-     *
-     * @param  string  $text
-     * @param  string|null  $link
-     * @param  string|null  $type
-     * @param  array  $classes
-     * @param  bool  $disabled
+     * Create a new component instance for the button.
+     * 
+     * The constructor accepts the following parameters:
+     * 
+     * @param  string  $text The text content of the component.
+     * @param  string|null  $link The link URL associated with the component (optional).
+     * @param  string|null  $type The type of component (optional, default is 'button').
+     * @param  bool  $disabled Whether the component is disabled (optional, default is false).
+     * @param  bool  $fullWidth Whether the component should have full width (optional, default is false).
+     * @param  string  $variant The variant style of the component (optional, default is 'contain').
+     * @param  string  $size The size of the component (optional, default is 'default').
+     * @param  string  $color The color of the component (optional, default is 'primary').
+     * @param  bool  $external Whether the link is external (optional, default is false).
+     * @param  mixed|null  $customLeft Custom content for the left side of the component (optional).
+     * @param  mixed|null  $customRight Custom content for the right side of the component (optional).
+     * 
      * @return void
-     */
-    public function __construct($text, $link = null, $type = null, $disabled = false, $fullWidth = false, $variant = 'contain', $size = 'default', $color = 'primary', $external = false, $customLeft = null, $customRight = null)
-    {
+    **/
+    public function __construct(
+        $text, $link = null, 
+        $type = null, 
+        $disabled = false, 
+        $fullWidth = false, 
+        $variant = 'contain', 
+        $size = 'default', 
+        $color = 'primary', 
+        $external = false, 
+        $customLeft = null, 
+        $customRight = null
+    ) {
         $this->text = $text;
         $this->link = $link;
         $this->type = $type ?? 'button';
