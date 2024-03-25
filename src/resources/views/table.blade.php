@@ -1,19 +1,21 @@
 <table>
     <thead>
         <tr>
-            @foreach ($headers as $header)
+            @foreach ($columns as $column)
                 <th>
-                    {{ $header }}
+                    {{ $column }}
                 </th>
             @endforeach
         </tr>
     </thead>
     <tbody>
-        @foreach ($items as $item)
+        @foreach ($rows as $row)
             <tr>
-                <td>
-                    {{ $item }}
-                </td>
+                @foreach ($row as $cell)
+                    <td>
+                        {{ $cell }}
+                    </td>
+                @endforeach
             </tr>
         @endforeach
     </tbody>

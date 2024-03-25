@@ -11,14 +11,14 @@ class Table extends Component
      *
      * @var array
     **/
-    public $headers;
+    public $columns;
 
     /**
      * The items to be displayed in the table.
      *
      * @var array
     **/
-    public $items;
+    public $rows;
 
     /**
      * Create a new component instance.
@@ -26,10 +26,10 @@ class Table extends Component
      * @param array $headers
      * @param array $items
     **/
-    public function __construct($headers, $items)
+    public function __construct($columns, $rows)
     {
-        $this->headers = $headers;
-        $this->items = $items;
+        $this->columns = $columns;
+        $this->rows = $rows;
     }
 
     /**
