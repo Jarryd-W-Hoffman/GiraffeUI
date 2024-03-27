@@ -21,15 +21,23 @@ class Table extends Component
     public $rows;
 
     /**
+     * The columns to be hidden.
+     *
+     * @var array
+    **/
+    public $hiddenColumns = [];
+
+    /**
      * Create a new component instance.
      *
      * @param array $headers
      * @param array $items
     **/
-    public function __construct($columns, $rows)
+    public function __construct($columns, $rows, $hiddenColumns = [])
     {
         $this->columns = $columns;
         $this->rows = $rows;
+        $this->hiddenColumns = $hiddenColumns;
     }
 
     /**
