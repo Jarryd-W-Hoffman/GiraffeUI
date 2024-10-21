@@ -34,6 +34,7 @@ class Button extends Component
      **/
     public $external;
 
+
     /**
      * Whether the button is disabled.
      *
@@ -70,20 +71,6 @@ class Button extends Component
     public $event;
 
     /**
-     * The custom content to be displayed on the left side of the button.
-     * 
-     * @var string
-     **/
-    public $customLeft;
-
-    /**
-     * The custom content to be displayed on the right side of the button.
-     * 
-     * @var string
-     **/
-    public $customRight;
-
-    /**
      * Create a new component instance for the button.
      * 
      * The constructor accepts the following parameters:
@@ -97,8 +84,6 @@ class Button extends Component
      * @param  string  $size The size of the component (optional, default is 'default').
      * @param  string  $color The color of the component (optional, default is 'primary').
      * @param  bool  $external Whether the link is external (optional, default is false).
-     * @param  mixed|null  $customLeft Custom content for the left side of the component (optional).
-     * @param  mixed|null  $customRight Custom content for the right side of the component (optional).
      * 
      * @return void
      **/
@@ -112,93 +97,74 @@ class Button extends Component
         $size = 'default',
         $color = 'primary',
         $external = false,
-        $customLeft = null,
-        $customRight = null
     ) {
         $this->link = $link;
-        $this->type = $type ?? 'button';
         $this->event = $event;
+        $this->type = $type ?? 'button';
         $this->disabled = $disabled;
         $this->fullWidth = $fullWidth;
         $this->variant = $variant;
         $this->size = $size;
         $this->color = $color;
         $this->external = $external;
-        $this->customLeft = $customLeft;
-        $this->customRight = $customRight;
     }
 
     /**
-     * Get the color styles based on the configured color in the GiraffeUI.
+     * Get the color styles based on the configured color in the Tailwind CSS configuration.
      *
      * @return string The generated color styles for the UI element.
-     **/
+     */
     public function getColorStyles()
     {
-        // Retrieve the configured colors from the GiraffeUI configuration file.
-        $colors = config('giraffeui.colors');
+        // Define a mapping of your button colors to Tailwind CSS classes.
+        $colorMapping = [
+            'primary' => 'bg-primary text-light',
+            'secondary' => 'bg-secondary text-light',
+            'success' => 'bg-success text-light',
+            'danger' => 'bg-danger text-light',
+            'warning' => 'bg-warning text-light',
+            'info' => 'bg-info text-light',
+            'light' => 'bg-light text-dark',
+            'dark' => 'bg-dark text-light',
+        ];
 
-        // Get the color configuration for the specific color, if available.
-        $colorConfig = $colors[$this->color] ?? null;
+        // Get the style based on the color and variant
+        $baseStyle = $colorMapping[$this->color] ?? 'bg-transparent text-black';
 
-        if ($colorConfig && is_array($colorConfig)) {
-            // Extract base color, shade, opacity, and text color from the configuration.
-            $baseColor = $colorConfig['base']['color'] ?? 'blue';
-            $shade = $colorConfig['base']['shade'] ?? '500';
-            $opacity = $colorConfig['base']['opacity'] ?? null;
-            $textColor = $colorConfig['text_color'] ?? 'black';
-
-            if ($baseColor) {
-                // Construct the base style with color, shade, and optional opacity.
-                $opacitySuffix = $opacity !== null ? "/{$opacity}" : '';
-                $baseStyle = "bg-{$baseColor}-{$shade}{$opacitySuffix}";
-
-                // Variant-specific adjustments
-                if ($this->variant === 'contain') {
-                    // Adjust background color for contained variant
-                    $baseStyle = "bg-{$baseColor}-{$shade}{$opacitySuffix} text-{$textColor}";
-                } elseif ($this->variant === 'outline') {
-                    // Adjust border color for outlined variant
-                    $baseStyle = "bg-transparent text-{$baseColor}-${shade}{$opacitySuffix} border border-{$baseColor}-{$shade}{$opacitySuffix}";
-                } elseif ($this->variant === 'text') {
-                    // Adjust text color for text variant
-                    $baseStyle = "bg-transparent text-{$baseColor}-{$shade}{$opacitySuffix} border-none";
-                }
-
-                // Return the generated color styles including background and text colors.
-                return "{$baseStyle} ";
-            }
+        // Variant-specific adjustments
+        if ($this->variant === 'contain') {
+            return "bg-{$this->color} text-light ";
+        } elseif ($this->variant === 'outline') {
+            return "bg-transparent border border-{$this->color} text-{$this->color} ";
+        } elseif ($this->variant === 'text') {
+            return "bg-transparent text-{$this->color} border-none ";
         }
 
-        // If color configuration is not available, return the original color.
-        return $this->color;
+        // Return the generated color styles
+        return $baseStyle;
     }
 
+    /**
+     * Get the size styles based on the configured size in the Tailwind CSS configuration.
+     *
+     * @return string The generated size styles for the UI element.
+     */
     public function getSizeStyles()
     {
-        // Retrieve the size settings from the configuration file
-        $sizes = config('giraffeui.sizes');
+        // Define a mapping of your button sizes to Tailwind CSS padding and text size classes.
+        $sizeMapping = [
+            'small' => 'px-2 py-0.5 text-xs',
+            'default' => 'px-4 py-1 text-sm',
+            'large' => 'px-6 py-2 text-base',
+        ];
 
-        // Get the size configuration for the specific size, if available.
-        $sizeConfig = $sizes[$this->size] ?? null;
+        // Get the style based on the size
+        $sizeStyles = $sizeMapping[$this->size] ?? 'px-4 py-1 text-sm';
 
-        if ($sizeConfig && is_array($sizeConfig)) {
-            // Extract horizontal spacing, vertical spacing, and text size from the configuration.
-            $horizontalSpacing = $sizeConfig['horizontal_spacing'] ?? '4';
-            $verticalSpacing = $sizeConfig['vertical_spacing'] ?? '2';
-            $textSize = $sizeConfig['text_size'] ?? 'sm';
-
-            if ($horizontalSpacing) {
-                // Construct the size styles with horizontal and vertical spacing, and text size.
-                $sizeStyles = "px-{$horizontalSpacing} py-{$verticalSpacing} text-{$textSize}";
-
-                // Return the generated size styles including horizontal and vertical spacing, and text size.
-                return "$sizeStyles ";
-            }
-        }
-
-        return $this->size;
+        // Return the generated size styles
+        return $sizeStyles;
     }
+
 
     /**
      * Get the view / contents that represent the component.

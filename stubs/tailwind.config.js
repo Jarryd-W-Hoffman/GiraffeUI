@@ -29,6 +29,11 @@ export default {
 				light: '#F3F4F6',
 				dark: '#111827'
 			},
+			padding: {
+				small: '0.125rem',
+				default: '0.25rem',
+				large: '0.5rem',
+			},
 		},
 	},
 	plugins: [
