@@ -1,29 +1,8 @@
-/** @type {import('tailwindcss').Config} */
-const colors = require('tailwindcss/colors');
+import defaultTheme, { colors } from 'tailwindcss/defaultTheme';
 
+/** @type {import('tailwindcss').Config} */
 export default {
 	darkMode: "class",
-	safelist: [
-		{
-			pattern: /bg-(blue|gray|green|red|teal|yellow|indigo|pink|orange|rose)-(100|200|300|400|500|600|700|800|900)/,
-			variants: ['hover'],
-		},
-		{
-			pattern: /(px|py)-(1|2|3|4|5|6|7|8|9|10)/,
-		},
-		{
-			pattern: /text-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)/,
-		},
-		{
-			pattern: /text-(gray|red|yellow|green|blue|indigo|purple|pink|white|black)-(100|200|300|400|500|600|700|800|900)/,
-		},
-		{
-			pattern: /text-(white|black)/,
-		},
-		{
-			pattern: /border-(gray|red|yellow|green|blue|indigo|purple|pink|white|black)-(100|200|300|400|500|600|700|800|900)/,
-		},
-	],
 	content: [
 		"./resources/**/*.blade.php",
 		"./resources/**/*.js",
@@ -32,7 +11,29 @@ export default {
 		"./vendor/jayaitch/giraffeui/src/resources/**/*.blade.php",
 	],
 	theme: {
-		extend: {},
+		extend: {
+			fontFamily: {
+				sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+			},
+			colors: {
+				transparent: 'transparent',
+				current: 'currentColor',
+				black: colors.black,
+				white: colors.white,
+				primary: '#1D4ED8',
+				secondary: '#9333EA',
+				success: '#10B981',
+				danger: '#EF4444',
+				warning: '#F59E0B',
+				info: '#3B82F6',
+				light: '#F3F4F6',
+				dark: '#111827'
+			},
+		},
 	},
-	plugins: [],
+	plugins: [
+		require('@tailwindcss/forms'),
+		require('@tailwindcss/typography'),
+		require('@tailwindcss/aspect-ratio'),
+	],
 }

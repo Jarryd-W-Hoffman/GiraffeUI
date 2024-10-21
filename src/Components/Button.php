@@ -10,77 +10,77 @@ class Button extends Component
      * The color of the button.
      *
      * @var string
-    **/
+     **/
     public $color;
 
     /**
      * The size of the button.
      *
      * @var string
-    **/
+     **/
     public $size;
 
     /**
      * The link to which the button should navigate.
      *
      * @var string
-    **/
+     **/
     public $link;
-    
+
     /**
      * Whether the link is an external link.
      *
      * @var bool
-    **/
+     **/
     public $external;
 
-    /**
-     * The text content of the button.
-     *
-     * @var string
-    **/
-    public $text;
-    
     /**
      * Whether the button is disabled.
      *
      * @var bool
-    **/
+     **/
     public $disabled;
 
     /**
      * Whether the button should take up the full width of the container.
      *
      * @var bool
-    **/
+     **/
     public $fullWidth;
 
     /**
      * The variant of the button.
      *
      * @var string
-    **/
+     **/
     public $variant;
 
     /**
      * The type of the button.
      *
      * @var string
-    **/
-     public $type;
- 
+     **/
+    public $type;
+
+    /**
+     * The on-click event handler for the button.
+     *
+     * @var string
+     **/
+    public $event;
+
     /**
      * The custom content to be displayed on the left side of the button.
      * 
      * @var string
-    **/
+     **/
     public $customLeft;
 
     /**
      * The custom content to be displayed on the right side of the button.
      * 
      * @var string
-    **/
+     **/
     public $customRight;
 
     /**
@@ -101,22 +101,23 @@ class Button extends Component
      * @param  mixed|null  $customRight Custom content for the right side of the component (optional).
      * 
      * @return void
-    **/
+     **/
     public function __construct(
-        $text, $link = null, 
-        $type = null, 
-        $disabled = false, 
-        $fullWidth = false, 
-        $variant = 'contain', 
-        $size = 'default', 
-        $color = 'primary', 
-        $external = false, 
-        $customLeft = null, 
+        $link = null,
+        $type = null,
+        $event = null,
+        $disabled = false,
+        $fullWidth = false,
+        $variant = 'contain',
+        $size = 'default',
+        $color = 'primary',
+        $external = false,
+        $customLeft = null,
         $customRight = null
     ) {
-        $this->text = $text;
         $this->link = $link;
         $this->type = $type ?? 'button';
+        $this->event = $event;
         $this->disabled = $disabled;
         $this->fullWidth = $fullWidth;
         $this->variant = $variant;
@@ -131,7 +132,7 @@ class Button extends Component
      * Get the color styles based on the configured color in the GiraffeUI.
      *
      * @return string The generated color styles for the UI element.
-    **/
+     **/
     public function getColorStyles()
     {
         // Retrieve the configured colors from the GiraffeUI configuration file.
@@ -203,10 +204,11 @@ class Button extends Component
      * Get the view / contents that represent the component.
      *
      * @return \Illuminate\Contracts\View\View|string
-    **/
+     **/
     public function render()
     {
-        return view('giraffeui::button', 
+        return view(
+            'giraffeui::button',
             [
                 'colorStyles' => $this->getColorStyles(),
                 'sizeStyles' => $this->getSizeStyles(),

@@ -7,9 +7,8 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Process\Process;
+use Illuminate\Filesystem\Filesystem;
 use RuntimeException;
-
-use function Laravel\Prompts\select;
 
 class GiraffeUIInstallCommand extends Command
 {
@@ -17,26 +16,44 @@ class GiraffeUIInstallCommand extends Command
      * The name and signature of the console command.
      *
      * @var string
-    **/
+     **/
     protected $signature = 'gui:install';
 
     /**
      * The console command description.
      *
      * @var string
-    **/
+     **/
     protected $description = 'Install GiraffeUI and its dependencies.';
 
     /**
      * The directory separator for the current OS.
      *
      * @var string
-    **/
+     **/
     protected $ds = DIRECTORY_SEPARATOR;
 
     /**
+     * The filesystem instance.
+     *
+     * @var Filesystem
+     **/
+    protected Filesystem $filesystem;
+
+    /**
+     * Create a new command instance.
+     *
+     * @param Filesystem $filesystem
+     **/
+    public function __construct(Filesystem $filesystem)
+    {
+        parent::__construct();
+        $this->filesystem = $filesystem;
+    }
+
+    /**
      * Execute the console command.
-    **/
+     **/
     public function handle()
     {
         // Display the welcome message.
@@ -57,7 +74,7 @@ class GiraffeUIInstallCommand extends Command
         // Publish config file to allow user to customize the package.
         $this->info("\nPublishing configuration...");
         Artisan::call('vendor:publish --force --tag=giraffeui.config');
-        
+
 
         // Clear view cache to ensure the new components are available.
         $this->info("Clearing view cache...\n");
@@ -66,7 +83,7 @@ class GiraffeUIInstallCommand extends Command
         // Inform user about successful installation.
         $this->info("\nYou're all set! You can now start building your application with GiraffeUI.\n");
     }
-    
+
     /**
      * Install all required composer packages.
      *
@@ -75,7 +92,7 @@ class GiraffeUIInstallCommand extends Command
      * - livewire/volt
      * 
      * @return void
-    **/
+     **/
     public function installComposerPackages()
     {
         // Inform user about Livewire installation.
@@ -126,8 +143,9 @@ class GiraffeUIInstallCommand extends Command
      * - tailwindcss
      * 
      * @return void
-    **/
-    public function installNodeModules() {
+     **/
+    public function installNodeModules()
+    {
         // Configure package manager based on the project.
         $packageManager = $this->configurePackageManager();
 
@@ -153,30 +171,38 @@ class GiraffeUIInstallCommand extends Command
         // Set paths for Tailwind configuration and related files.
         $tailwindJsPath = base_path() . "{$this->ds}tailwind.config.js";
 
-         // Check if Tailwind configuration file exists; if not, copy stubs.
+        // Check if Tailwind configuration file exists; if not, copy stubs.
         if (! File::exists($tailwindJsPath)) {
-            $this->copyFile(__DIR__ . "/../../../stubs/tailwind.config.js", "tailwind.config.js");
+
             $this->copyFile(__DIR__ . "/../../../stubs/postcss.config.js", "postcss.config.js");
 
             return;
         }
 
-        // Update Tailwind configuration to include GiraffeUI paths.
-        $tailwindJs = File::get($tailwindJsPath);
-        $originalContents = str($tailwindJs)->after('contents')->after('[')->before(']');
+        $this->copyFile(__DIR__ . "/../../../stubs/tailwind.config.js", "tailwind.config.js");
 
-        // Check if GiraffeUI paths are already present; if yes, return.
-        if ($originalContents->contains('jayaitch/giraffeui')) {
-            return;
-        }
+        // // Update Tailwind configuration to include GiraffeUI paths.
+        // //
+        // // Todo: Add dark mode configuration.
+        // //
+        // $tailwindJs = File::get($tailwindJsPath);
+        // $originalContents = str($tailwindJs)->after('contents')->after('[')->before(']');
 
-        // Add GiraffeUI paths to Tailwind configuration.
-        $contents = $originalContents->squish()->trim()->remove(' ')->explode(',')->add('"./vendor/jayaitch/giraffeui/src/resources/**/*.blade.php"')->filter()->implode(', ');
-        $contents = str($contents)->prepend("\n\t\t")->replace(',', ",\n\t\t")->append("\r\n\t");
-        $contents = str($tailwindJs)->replace($originalContents, $contents);
+        // // Check if GiraffeUI paths are already present; if yes, return.
+        // if ($originalContents->contains('jayaitch/giraffeui')) {
+        //     return;
+        // }
 
-        // Update the Tailwind configuration file.
-        File::put($tailwindJsPath, $contents);
+        // // "./vendor/jayaitch/giraffeui/src/Components/*.php",
+        // // "./vendor/jayaitch/giraffeui/src/resources/**/*.blade.php",
+
+        // // Add GiraffeUI paths to Tailwind configuration.
+        // $contents = $originalContents->squish()->trim()->remove(' ')->explode(',')->add('"./vendor/jayaitch/giraffeui/src/resources/**/*.blade.php"')->filter()->implode(', ');
+        // $contents = str($contents)->prepend("\n\t\t")->replace(',', ",\n\t\t")->append("\r\n\t");
+        // $contents = str($tailwindJs)->replace($originalContents, $contents);
+
+        // // Update the Tailwind configuration file.
+        // File::put($tailwindJsPath, $contents);
 
         // Inform the user about the successful installation.
         $this->info("\nTailwindCSS installed successfully!\n");
@@ -186,7 +212,7 @@ class GiraffeUIInstallCommand extends Command
      * Prompt the user for their preferred package manager and return the selected option.
      *
      * @return string
-    **/
+     **/
     public function configurePackageManager(): string
     {
         // Determine the appropriate command to find executables based on the operating system.
@@ -229,22 +255,119 @@ class GiraffeUIInstallCommand extends Command
     /**
      * Install the package stubs.
      * 
-     * TODO: Check if the layouts directory already exists and prompt the user to overwrite, skip or rename.
+     * Check if the app.blade.php file already exists and prompt the user to overwrite, skip or rename.
      * 
      * @return void
-    **/
-    public function installStubs(): void {
+     **/
+    public function installStubs(): void
+    {
         // Inform the user about the installation process.
         $this->info("\nInstalling GiraffeUI stubs...\n");
 
         // Define the path to the layouts directory within the project's resources.
-        $layoutsPath = "resources{$this->ds}views{$this->ds}components{$this->ds}layouts";
+        $layoutsPath = "resources{$this->ds}views{$this->ds}layouts";
 
         // Ensure that the layouts directory exists, create if not.
         $this->createDirectory($layoutsPath);
 
-        // Copy the default app layout stub file to the layouts directory.
-        $this->copyFile(__DIR__ . "/../../../stubs/app.blade.php", "{$layoutsPath}{$this->ds}app.blade.php");
+        // Define the path to the app.blade.php file.
+        $appBladePath = "{$layoutsPath}{$this->ds}app.blade.php";
+
+        // Check if the app.blade.php file already exists.
+        if ($this->filesystem->exists($appBladePath)) {
+            // Prompt the user for action: overwrite, skip, or rename.
+            $choice = $this->choice(
+                "The app.blade.php file already exists. What would you like to do?",
+                ['Overwrite', 'Skip', 'Rename']
+            );
+
+            if ($choice === 'Overwrite') {
+                // Delete the existing file to overwrite.
+                $this->filesystem->delete($appBladePath);
+                $this->info("The existing app.blade.php file has been deleted.");
+
+                // Proceed to copy the new file.
+                $this->copyFile(__DIR__ . "/../../../stubs/app.blade.php", $appBladePath);
+                $this->info("The app.blade.php file has been successfully overwritten.");
+            }
+
+            if ($choice === 'Skip') {
+                $this->info("Skipping app.blade.php installation.");
+                return; // Skip the rest of the installation if the user chooses to skip.
+            }
+
+            if ($choice === 'Rename') {
+                // Prompt the user for a new name for the file.
+                $newFileName = strtolower($this->ask("Please provide a new name for the app.blade.php file (without extension):"));
+                $newFilePath = "{$layoutsPath}{$this->ds}{$newFileName}.blade.php";
+
+                // Rename the existing file.
+                $this->filesystem->move($appBladePath, $newFilePath);
+                $this->info("The app.blade.php file has been renamed to: {$newFileName}.blade.php");
+
+                // Copy the renamed component class with the first letter capitalized.
+                $this->copyComponent(ucfirst($newFileName));
+
+                // Edit the new component class file.
+                $componentClassPath = app_path("View/Components/" . ucfirst($newFileName) . "Layout.php");
+                $this->updateComponentClass($componentClassPath, ucfirst($newFileName));
+
+                // Edit the new Blade file to include the renamed component.
+                $contents = File::get($newFilePath);
+
+                // Replace the component name in the file.
+                $contents = str($contents)->replace('AppLayout', ucfirst($newFileName) . 'Layout');
+
+                // Update the file with the new component name.
+                File::put($newFilePath, $contents);
+
+                // Skip copying the new file since it's already renamed.
+                return;
+            }
+        } else {
+            // Copy the default app layout stub file to the layouts directory.
+            $this->copyFile(__DIR__ . "/../../../stubs/app.blade.php", $appBladePath);
+
+            $this->copyComponent();
+        }
+    }
+
+    protected function copyComponent(string $newFileName = 'App'): void
+    {
+        // Define the path to the components directory within the project's http directory.
+        $componentsPath = "app{$this->ds}View{$this->ds}Components";
+
+        // Ensure that the components directory exists, create if not.
+        $this->createDirectory($componentsPath);
+
+        // Copy the component class with the first letter of the filename capitalized.
+        $this->copyFile(__DIR__ . "/../../../stubs/AppLayout.php", "{$componentsPath}{$this->ds}{$newFileName}Layout.php");
+    }
+
+    /**
+     * Update the component class file by renaming the class and its contents.
+     *
+     * @param string $filePath
+     * @param string $newClassName
+     * @return void
+     */
+    private function updateComponentClass(string $filePath, string $newClassName): void
+    {
+        if (File::exists($filePath)) {
+            $classContents = File::get($filePath);
+
+            // Replace the class name and the return view statement.
+            $updatedContents = str($classContents)
+                ->replace('class AppLayout', "class {$newClassName}Layout")
+                ->replace("return view('layouts.app');", "return view('layouts.{$newClassName}');");
+
+            // Save the updated contents back to the file.
+            File::put($filePath, $updatedContents);
+
+            $this->info("Component class file {$newClassName}Layout.php has been updated.");
+        } else {
+            $this->error("Component class file not found at {$filePath}.");
+        }
     }
 
     /**
@@ -256,7 +379,7 @@ class GiraffeUIInstallCommand extends Command
      * @return void
      *
      * @throws RuntimeException If the file copy fails.
-    **/
+     **/
     private function copyFile(string $source, string $destination): void
     {
         try {
@@ -268,13 +391,14 @@ class GiraffeUIInstallCommand extends Command
         }
     }
 
+
     /**
      * Create a directory if it does not already exist.
      *
      * @param string $path The path of the directory to be created.
      * 
      * @return void
-    **/
+     **/
     private function createDirectory(string $path): void
     {
         // Check if the directory already exists
@@ -290,13 +414,13 @@ class GiraffeUIInstallCommand extends Command
      * @param Process $process - The Symfony Process instance to be executed.
      * 
      * @return void
-    **/
+     **/
     private function runProcessWithOutput(Process $process)
     {
         // Run the process asynchronously and capture the output.
         $process->run(function (string $type, string $output) {
             // Echo the output as it is received.
-            echo $output;
+            // echo $output;
         });
     }
 }

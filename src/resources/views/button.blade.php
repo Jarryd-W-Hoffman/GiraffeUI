@@ -10,6 +10,7 @@
         type="{{ $type }}" 
         {{ $disabled ? 'disabled' : '' }} 
     @endif
+    onclick="{!! $event !!}"
     {{
         $attributes->merge(
             [
@@ -22,11 +23,5 @@
         ) 
     }}
 >
-    @if ($customLeft)
-        {!! $customLeft !!}
-    @endif
-    {{ $text }}
-    @if ($customRight)
-        {!! $customRight !!}
-    @endif
+    {{ $slot }}
 </{{ $link ? 'a' : 'button' }}>
